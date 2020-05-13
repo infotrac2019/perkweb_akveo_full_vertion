@@ -1,5 +1,4 @@
-# Perkweb Admin UI
-- GitHub : https://github.com/infotrac2019/Admin---Front-End.git
+
 
 ## spec
 - npm 6.x.x
@@ -10,12 +9,8 @@
 
 ### Create Project
 ```bash
-$ git clone git@github.com/infotrac2019/Admin---Front-End.git
+$ git clone 
 
-or
-
-$ git clone https://github.com/infotrac2019/Admin---Front-End.git
-```
 
 ## Running the application locally
 
