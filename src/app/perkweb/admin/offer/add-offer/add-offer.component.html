@@ -1,0 +1,349 @@
+<nb-card>
+    <nb-card-header *ngIf="isEdit; else elseBlock">Edit Perk</nb-card-header>
+    <ng-template #elseBlock>
+        <nb-card-header>Create New Perk</nb-card-header>
+    </ng-template>
+    <nb-card-body>
+        <form (ngSubmit)="publishOffer()" [formGroup]="offerForm">
+            <div class="form-group row">
+
+                <div class="col-sm-9">
+                    <nb-tabset>
+                        <nb-tab tabTitle="Details">
+
+                            <div class="form-group row">
+                                <label for="offerName" class="label col-sm-3 col-form-label">Perk Name</label>
+                                <div class="col-sm-8">
+                                    <input type="text" nbInput placeholder="Perk Name" formControlName="offerName"
+                                        fullWidth />
+                                    <span class="text-danger" *ngIf="
+                                        (submitted || saveAsDraft || formControls('offerName').touched) &&
+                                        formControls('offerName').errors && 
+                                        formControls('offerName').errors.required">Perk Name is
+                                        required!</span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="offerType" class="label col-sm-3 col-form-label">Perk Type</label>
+                                <div class="col-sm-3">
+                                    <nb-select placeholder="Select Perk Type" [(selected)]="selectedType"
+                                        formControlName="offerType" fullWidth id="offerType">
+                                        <nb-option value="CODE">Code</nb-option>
+                                        <nb-option value="UNLOCK_CODE">Unlock Code</nb-option>
+                                        <nb-option value="URL" disabled>URL</nb-option>
+                                        <nb-option value="PRIZE_DRAW" disabled>Prize Draw</nb-option>
+                                        <nb-option value="GIVEAWAY" disabled>Giveaway</nb-option>
+
+                                    </nb-select>
+                                    <span class="text-danger" *ngIf="(submitted || formControls('offerType').touched) &&
+                formControls('offerType').errors &&
+                formControls('offerType').errors.required">
+                                        Perk Type is
+                                        required!</span>
+                                </div>
+                                <div class="form-group " class="col-sm-6">
+                                    <!-- <div *ngIf="selectedType=='unlockCode'" class="form-group row">
+<label for="unlockCode" class="label col-sm-3 col-form-label">Unlock
+Code</label>
+<div class="col-sm-7">
+<input type="text" nbInput placeholder="Enter Unlock Code"
+[(ngModel)]="offer.unlockCode" ngModel formControlName="unlockCode" fullWidth
+id="unlockCode" 
+required #unlockCode="ngModel" />
+<span class="text-danger"
+*ngIf="unlockCode.invalid && (f.submitted || unlockCode.touched)">
+Unlock Code is 
+required!</span></div>
+</div> -->
+                                    <div *ngIf="selectedType=='CODE'" class="form-group row">
+                                        <label for="code" class="label col-sm-2 col-form-label">Code</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" nbInput placeholder="Enter Code" formControlName="code"
+                                                fullWidth id="code" />
+                                            <span class="text-danger" *ngIf="
+                                            (submitted || formControls('code').touched) &&
+                                            formControls('code').errors &&
+                                            formControls('code').errors.required">
+                                                Code is
+                                                required!</span></div>
+                                    </div>
+                                    <div *ngIf="selectedType=='CODE'" class="form-group row">
+                                        <label for="code" class="label col-sm-2 col-form-label">URL</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" nbInput placeholder="Enter URL" formControlName="url"
+                                                fullWidth id="url" /></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="group" class="label col-sm-3 col-form-label">Groups</label>
+                                <div formGroupName="group" class="col-sm-8">
+                                    <nb-select placeholder="Select Group" formControlName="id" fullWidth>
+                                        <nb-option></nb-option>
+                                        <nb-option [value]="1">Gold</nb-option>
+                                        <nb-option [value]="2">Silver</nb-option>
+                                        <nb-option [value]="3">Platinum</nb-option>
+                                    </nb-select>
+                                    <span class="text-danger" *ngIf="
+                                    (submitted || saveAsDraft || formControls('group.id').touched) &&
+                                    formControls('group.id').errors &&
+                                    formControls('group.id').errors.required">
+                                        Group is required!</span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="snippet" class="label col-sm-3 col-form-label">Perk Snippet</label>
+                                <div class="col-sm-8">
+                                    <input type="text" nbInput placeholder="Snippet" formControlName="snippet" fullWidth
+                                        id="snippet" />
+                                    <span class="text-danger" *ngIf="
+                                (submitted || formControls('snippet').touched) &&
+                                formControls('snippet').errors &&
+                                formControls('snippet').errors.required    ">
+                                        Snippet is required!</span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="vendor" class="label col-sm-3 col-form-label">Partner</label>
+
+                                <div class="col-sm-8">
+                                    <input #vendorInput nbInput type="text" (input)="onChange('vendor')"
+                                        placeholder="Select Partner" [nbAutocomplete]="autov" id="vendor"
+                                        formControlName="vendor" fullWidth />
+
+                                    <nb-autocomplete #autov (selectedChange)="onVendorSelectnChange($event)"
+                                        [handleDisplayFn]="viewHandle" [size]="'large'">
+                                        <nb-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+                                            {{ option.vendorName }}
+                                        </nb-option>
+                                    </nb-autocomplete>
+                                    <span class="text-danger" *ngIf="(submitted || saveAsDraft || formControls('vendor').touched) &&
+                                        formControls('vendor').errors &&
+                                    formControls('vendor').errors.required">
+                                        Partner is
+                                        required!</span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="companies" class="label col-sm-3 col-form-label">Available To</label>
+                                <div class="col-sm-8">
+                                    <input type="text" nbInput placeholder="Select Company" fullWidth id="companies"
+                                        (click)="onClickCompany()" />
+
+                                </div>
+                            </div>
+                            <div *ngIf="selectedCompanyList.length!=0" class="lists row">
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-8">
+                                    <nb-card>
+                                        <nb-card-header>Selected Company List</nb-card-header>
+                                        <nb-list>
+                                            <nb-list-item class="contact" *ngFor="let company of selectedCompanyList">
+                                                <nb-user [name]="company.companyName" [title]="company.id">
+                                                </nb-user>
+                                                <nb-icon icon="close-outline" pack="eva"
+                                                    (click)="onDeleteFromCompanyList(company)"></nb-icon>
+                                            </nb-list-item>
+                                        </nb-list>
+                                    </nb-card>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="offerStartDate" class="label col-sm-3 col-form-label">Start Date</label>
+                                <div class="col-sm-3">
+                                    <input fullWidth nbInput placeholder="Start Date" [nbDatepicker]="startformpicker"
+                                        formControlName="offerStartDate" fullWidth id="offerStartDate">
+                                    <nb-datepicker #startformpicker></nb-datepicker>
+                                    <span class=" text-danger" *ngIf="
+                                    (submitted || formControls('offerStartDate').touched) &&
+                                    formControls('offerStartDate').errors &&
+                                    formControls('offerStartDate').errors.required    ">Perk Start Date is
+                                        required!</span>
+                                </div>
+                                <label for="offerEndDate" class="label col-sm-2 col-form-label">End Date</label>
+                                <div class="col-sm-3">
+                                    <input fullWidth nbInput placeholder="End Date" [nbDatepicker]="endformpicker"
+                                        formControlName="offerEndDate" fullWidth id="offerEndDate">
+                                    <nb-datepicker #endformpicker></nb-datepicker>
+                                    <span class=" text-danger" *ngIf="
+                                    (submitted || formControls('offerEndDate').touched) &&
+                                    formControls('offerEndDate').errors &&
+                                    formControls('offerEndDate').errors.required    ">Perk End Date is
+                                        required!</span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="redemptionUrl" class="label col-sm-3 col-form-label">Redemption URL</label>
+                                <div class="col-sm-8">
+                                    <input type="text" nbInput placeholder="Redemption URL"
+                                        formControlName="redemptionUrl" fullWidth id="redemptionUrl" />
+                                </div>
+                            </div>
+                            <!-- <div class="form-group row">
+<label for="image" class="label col-sm-3 col-form-label">Image Upload</label>
+<div class="col-sm-8">
+<div class="file-field">
+<div class="btn blue-gradient btn-sm float-left">
+<span><i class="fas fa-cloud-upload-alt mr-2" aria-hidden="true"></i>Choose files</span>
+<input type="file">
+</div>
+<div class="file-path-wrapper">
+<input class="file-path validate" type="text" placeholder="Upload one or more files">
+</div>
+</div>
+</div>
+</div> -->
+                            <div class="form-group row">
+
+
+                                <label for="image" class="label col-sm-3 col-form-label">Image Upload</label>
+                                <div formArrayName="image" class="col-sm-5">
+                                    <a>
+
+                                        <input id="file" type="file" (change)="onFileChange($event)" fullWidth
+                                            id="image" class="btn">
+                                        <img [src]="imageSrc" *ngIf="imageSrc" class="offer-image">
+
+                                        <!-- <input *ngFor="let control of formControls('image').controls; let i=index"
+                                            id="file" type="file" (change)="onFileChange($event)" [formControlName]="i"
+                                            fullWidth id="image" class="btn">
+                                        <img [src]="imageSrc" *ngIf="imageSrc" class="offer-image"> -->
+
+                                    </a>
+                                    <!-- <span class="text-danger" *ngIf="(submitted) &&
+                formControls('image').controls[0].errors &&
+                formControls('image').controls[0].errors.required">
+                                        Image upload is
+                                        required!</span> -->
+
+
+                                </div>
+                            </div>
+
+
+                        </nb-tab>
+                        <nb-tab tabTitle="Additional Information">
+                            <div formGroupName="claimDetails" class="form-group row">
+
+                                <nb-card>
+                                    <nb-card-header>
+                                        Perk Details
+                                    </nb-card-header>
+                                    <nb-card-body>
+                                        <ckeditor [config]="{ height: '200' }" formControlName="offerDetails" fullWidth
+                                            id="offerDetails"></ckeditor>
+                                        <span class="text-danger" *ngIf="
+                                        (submitted || formControls('claimDetails.offerDetails').touched) &&
+                                        formControls('claimDetails.offerDetails').errors &&
+                                        formControls('claimDetails.offerDetails').errors.required    ">Perk Details is
+                                            required!</span>
+                                    </nb-card-body>
+                                </nb-card>
+                                <nb-card>
+                                    <nb-card-header>
+                                        How To Redeem
+                                    </nb-card-header>
+                                    <nb-card-body>
+                                        <ckeditor [config]="{ height: '200' }" formControlName="howToRedeem" fullWidth
+                                            id="howToRedeem"></ckeditor>
+                                        <span class="text-danger" *ngIf="
+                                            (submitted || formControls('claimDetails.howToRedeem').touched) &&
+                                            formControls('claimDetails.howToRedeem').errors &&
+                                            formControls('claimDetails.howToRedeem').errors.required    ">How To Redeem
+                                            is
+                                            required!</span>
+                                    </nb-card-body>
+                                </nb-card>
+                                <nb-card>
+                                    <nb-card-header>
+                                        FAQs
+                                    </nb-card-header>
+                                    <nb-card-body>
+                                        <ckeditor [config]="{ height: '200' }" formControlName="faqs" fullWidth
+                                            id="faqs">
+                                        </ckeditor>
+                                        <span class="text-danger" *ngIf="
+                                        (submitted || formControls('claimDetails.faqs').touched) &&
+                                        formControls('claimDetails.faqs').errors &&
+                                        formControls('claimDetails.faqs').errors.required    ">FAQs is
+                                            required!</span>
+                                    </nb-card-body>
+                                </nb-card>
+                                <nb-card>
+                                    <nb-card-header>
+                                        Terms and Conditions
+                                    </nb-card-header>
+                                    <nb-card-body>
+                                        <ckeditor [config]="{ height: '200' }" formControlName="termsAndConditions"
+                                            fullWidth id="termsAndConditions" ckeditor></ckeditor>
+                                        <span class="text-danger" *ngIf="
+                                        (submitted || formControls('claimDetails.termsAndConditions').touched) &&
+                                        formControls('claimDetails.termsAndConditions').errors &&
+                                        formControls('claimDetails.termsAndConditions').errors.required    ">Terms and
+                                            Conditions is required!</span>
+                                    </nb-card-body>
+                                </nb-card>
+                            </div>
+                        </nb-tab>
+                    </nb-tabset>
+                </div>
+                <div class="col-sm-3">
+                    <nb-card>
+                        <nb-card-body class="example-items-grid">
+                            <div class="buttons-row">
+                                <button type="submit" nbButton class="col-sm-11" size="large" status="success" hero>Save
+                                    & Publish</button>
+                            </div>
+                            <div class="buttons-row">
+                                <button type="button" (click)="onSaveAsDraft()" nbButton class="col-sm-5" status="primary"
+                                    hero>Save as Draft</button>
+                                <button type="button" (click)="onClickCancel()" nbButton class="col-sm-5"
+                                    status="danger" hero>Cancel</button>
+                            </div>
+                            <nb-card>
+                                <nb-card-header>Perk Category</nb-card-header>
+                                <nb-card-body class="example-items-grid">
+                                    <div formArrayName="categories" *ngFor="let category of categoryList; let i=index">
+                                        <nb-checkbox *ngIf="category.category==null" status="primary"
+                                            (change)="onCheckboxChange($event, category)"
+                                            [checked]="category.isChecked">
+                                            {{category.name}}
+                                        </nb-checkbox>
+                                        <div class="offset-sm-2" *ngFor="let subcategory of category.subCategory">
+                                            <nb-checkbox status="primary"
+                                                (change)="onCheckboxChange($event, subcategory)"
+                                                [checked]="subcategory.isChecked">
+                                                {{subcategory.name}}
+                                            </nb-checkbox>
+                                        </div>
+
+                                    </div>
+
+                                </nb-card-body>
+                            </nb-card>
+
+                            <div *ngIf="isEdit" class="form-group row">
+                               
+                                    <nb-checkbox 
+                                    class="offset-sm-1"
+                                    status="primary" 
+                                    formControlName="disabled"
+                                    [disabled]="disableOfferCheckbox">
+                                    Disable Perk
+                                    </nb-checkbox>
+                            </div>
+
+                        </nb-card-body>
+                    </nb-card>
+                </div>
+            </div>
+            <div class="buttons-row offset-sm-2 col-sm-8">
+                <button type="submit" nbButton status="success" hero>Save & Publish</button>
+                <button type="button" (click)="onSaveAsDraft()" nbButton status="primary" hero>Save as Draft</button>
+                <button type="button" (click)="onClickCancel()" nbButton status="danger" hero>Cancel</button>
+            </div>
+        </form>
+    </nb-card-body>
+
+
+</nb-card>

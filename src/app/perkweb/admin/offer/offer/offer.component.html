@@ -1,0 +1,33 @@
+<nb-card>
+  <nb-card-header>
+    Perks
+  </nb-card-header>
+
+  <nb-card-body>
+    <div class="form-group row">
+      <div class="buttons-row col-sm-8 statusBtn">
+        <button nbButton shape="semi-round" size="small" [status]="buttonStatus.ALL" (click)="getAllOffers()">All</button>
+        <button nbButton shape="semi-round" size="small" [status]="buttonStatus.DRAFT" (click)="filterOfferListByStatus('DRAFT')">Draft</button>
+        <button nbButton shape="semi-round" size="small" [status]="buttonStatus.ACTIVE" (click)="filterOfferListByStatus('ACTIVE')">Active</button>
+        <button nbButton shape="semi-round" size="small" [status]="buttonStatus.DISABLED" (click)="filterOfferListByStatus('DISABLED')">Disabled</button>
+        <button nbButton shape="semi-round" size="small" [status]="buttonStatus.UPCOMING" (click)="filterOfferListByStatus('UPCOMING')">Upcoming</button>
+        <button nbButton shape="semi-round" size="small" [status]="buttonStatus.EXPIRING" (click)="filterOfferListByStatus('EXPIRING')">Expiring Soon</button>
+        <button nbButton shape="semi-round" size="small" [status]="buttonStatus.EXPIRED" (click)="filterOfferListByStatus('EXPIRED')">Expired</button>
+      </div>
+    <div class="buttons-row text-right col-sm-4">
+      <button routerLink="/admin/offer/add" nbButton [status]="'info'" hero>
+        Create Perk
+      </button>
+    </div>
+    </div>
+    <div class="col-12 smart-table-container">
+      <ng2-smart-table
+        [settings]="settings"
+        [source]="source"
+        (delete)="onDeleteConfirm($event)"
+        (edit)="onEditConfirm($event)"
+      >
+      </ng2-smart-table>
+    </div>
+  </nb-card-body>
+</nb-card>

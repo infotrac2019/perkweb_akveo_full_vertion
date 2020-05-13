@@ -1,0 +1,29 @@
+<!-- <img [src]="croppedImage" /> -->
+
+<nb-card>
+  <nb-card-header>Select {{ title }}</nb-card-header>
+
+  <nb-card-body>
+    <div class="col-12 smart-table-container">
+      <input type="file" (change)="fileChangeEvent($event)" />
+      <div [class]="imgDisplayClass">
+        <image-cropper
+          [imageChangedEvent]="imageChangedEvent"
+          [maintainAspectRatio]="true"
+          [aspectRatio]="aspectRatio"
+          format="png"
+          (imageCropped)="imageCropped($event)"
+          (imageLoaded)="imageLoaded($event)"
+          (cropperReady)="cropperReady()"
+          (loadImageFailed)="loadImageFailed()"
+        ></image-cropper>
+      </div>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <button nbButton hero status="success" (click)="onSelect()">Select</button>
+    <button class="cancel" nbButton status="danger" (click)="dismiss()">
+      Cancel
+    </button>
+  </nb-card-footer>
+</nb-card>

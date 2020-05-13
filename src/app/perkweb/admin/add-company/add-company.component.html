@@ -1,0 +1,204 @@
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+      <nb-card-header *ngIf="isEdit; else elseBlock">Edit Company</nb-card-header>
+      <ng-template #elseBlock>
+        <nb-card-header>Create Company</nb-card-header>
+      </ng-template>
+
+      <nb-card-body>
+        <form (ngSubmit)="f.form.valid && addOrUpdateCompany(f)" #f="ngForm">
+          <div class="form-group row">
+            <label for="companyName" class="label col-sm-3 col-form-label">Company Name</label>
+            <div class="col-sm-8">
+              <input [(ngModel)]="data.companyName" ngModel name="companyName" type="text" nbInput fullWidth
+                id="companyName" placeholder="Company Name" required #companyName="ngModel" />
+              <span class="text-danger" *ngIf="
+                  companyName.invalid && (f.submitted || companyName.touched)
+                ">Company Name is required!</span>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="domainName" class="label col-sm-3 col-form-label">Domain name</label>
+            <div class="col-sm-8">
+              <input [(ngModel)]="data.domainName" ngModel name="domainName" type="text" nbInput fullWidth
+                id="domainName" placeholder="Domain name" />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="ownerName" class="label col-sm-3 col-form-label">Owner Name</label>
+            <div class="col-sm-8">
+              <input [(ngModel)]="data.ownerName" ngModel name="ownerName" type="text" nbInput fullWidth id="ownerName"
+                placeholder="Owner Name" required #ownerName="ngModel" />
+              <span class="text-danger" *ngIf="ownerName.invalid && (f.submitted || ownerName.touched)">Owner Name is
+                required!</span>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="ownerEmail" class="label col-sm-3 col-form-label">Owner Email</label>
+            <div class="col-sm-8">
+              <input [(ngModel)]="data.ownerEmail" ngModel name="ownerEmail" type="email" nbInput fullWidth
+                id="ownerEmail" placeholder="Admin Email" required email #ownerEmail="ngModel" />
+              <div *ngIf="
+                  ownerEmail.invalid && (f.submitted || ownerEmail.touched)
+                ">
+                <span class="text-danger" *ngIf="ownerEmail.errors.required">Owner Email is required</span>
+                <span class="text-danger" *ngIf="ownerEmail.errors.email">Owner Email must be a valid email
+                  address</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="logoUrl" class="label col-sm-3 col-form-label">Company Logo Url</label>
+            <div class="col-sm-8">
+              <input [(ngModel)]="data.logoUrl" ngModel name="logoUrl" type="url" nbInput fullWidth id="logoUrl"
+                placeholder="Company Logo Url" />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="corporation" class="label col-sm-3 col-form-label">Corporation</label>
+
+            <div class="col-sm-8">
+              <input #autoInputCorp nbInput type="text" (input)="onChange('corporation')" placeholder="Corporation"
+                [nbAutocomplete]="autoc" [(ngModel)]="data.corporation" ngModel id="corporation" name="corporation"
+                fullWidth />
+
+              <nb-autocomplete #autoc (selectedChange)="onParentCompanySelectnChange($event)"
+                [handleDisplayFn]="viewHandleCorp" [size]="'large'">
+                <nb-option *ngFor="let option of companyFilteredOptions$ | async" [value]="option">
+                  {{ option.companyName }}
+                </nb-option>
+              </nb-autocomplete>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="pointsPerDollar" class="label col-sm-3 col-form-label">Points conversion rate</label>
+            <div class="col-sm-8">
+              <input [(ngModel)]="data.pointsPerDollar" ngModel name="pointsPerDollar" type="text" nbInput fullWidth
+                id="pointsPerDollar" placeholder="Points conversion rate" #pointsPerDollar="ngModel" />
+              <span class="text-danger" *ngIf="
+                  pointsPerDollar.invalid &&
+                  (f.submitted || pointsPerDollar.touched)
+                ">Points conversion rate accepts only numeric!</span>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="reserveAlert" class="label col-sm-3 col-form-label">Reserve alert</label>
+            <div class="col-sm-8">
+              <input [(ngModel)]="data.reserveAlert" ngModel name="reserveAlert" type="text" nbInput fullWidth
+                id="reserveAlert" placeholder="Minimum points left in company reserve" #reserveAlert="ngModel" />
+              <span class="text-danger" *ngIf="
+                  reserveAlert.invalid && (f.submitted || reserveAlert.touched)
+                ">Reserve alert accepts only numeric!</span>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="reserveBcc" class="label col-sm-3 col-form-label">Reserve BCC</label>
+            <div class="col-sm-8">
+              <input [(ngModel)]="data.reserveBcc" ngModel name="reserveBcc" type="email" nbInput fullWidth
+                id="reserveBcc" placeholder="Reserve BCC" email #reserveBcc="ngModel" />
+              <div *ngIf="
+                  reserveBcc.invalid && (f.submitted || reserveBcc.touched)
+                ">
+                <span class="text-danger" *ngIf="reserveBcc.errors.email">Reserve BCC must be a valid email
+                  address</span>
+              </div>
+            </div>
+          </div>
+          <nb-accordion>
+            <nb-accordion-item #item>
+              <nb-accordion-item-header>
+                Address
+              </nb-accordion-item-header>
+              <nb-accordion-item-body>
+                <ngx-address [address]="data.address"></ngx-address>
+              </nb-accordion-item-body>
+            </nb-accordion-item>
+
+            <nb-accordion-item *ngIf="isEdit">
+              <nb-accordion-item-header>
+                Partner Blacklisting
+              </nb-accordion-item-header>
+              <nb-accordion-item-body>
+                <nb-alert *ngIf="isBlackListed" status="warning" closable (close)="onClose()">
+                  You have Already black listed this Partner!
+                </nb-alert>
+                <div class="form-group row">
+                  <label for="blacklistedVendors" class="label col-sm-3 col-form-label">Select Partner</label>
+                  <div class="col-sm-6">
+                    <input #autoInputVendor nbInput type="text" (input)="onChange('blacklistedVendors')"
+                      placeholder="Partner" [nbAutocomplete]="auto" id="blacklistedVendors" />
+
+                    <nb-autocomplete #auto (selectedChange)="onSelectionChange($event)" [handleDisplayFn]="viewHandle"
+                      [size]="'large'">
+                      <nb-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+                        {{ option.vendorName }}
+                      </nb-option>
+                    </nb-autocomplete>
+                  </div>
+                </div>
+
+                <div class="lists row">
+                  <div class="col-sm-3"></div>
+                  <div class="col-md-12 col-lg-6 col-xxxl-6">
+                    <nb-card>
+                      <nb-card-header>Blacklisted Partners</nb-card-header>
+                      <nb-list>
+                        <nb-list-item *ngIf="blacklistedVendors.length == 0"><span>No partners are blacklisted</span>
+                        </nb-list-item>
+                        <nb-list-item class="contact" *ngFor="let vendor of blacklistedVendors">
+                          <nb-user [name]="vendor.vendorName" [title]="vendor.id">
+                          </nb-user>
+                          <nb-icon icon="close-outline" pack="eva" (click)="onDeleteConfirm(vendor)"></nb-icon>
+                        </nb-list-item>
+                      </nb-list>
+                    </nb-card>
+                  </div>
+                </div>
+
+                <!-- <label class="label col-sm-3 col-form-label"
+                      >Black Listed Partners:</label
+                    >
+
+                    <div class="col-12 smart-table-container">
+                      <ng2-smart-table
+                        [settings]="settings"
+                        [source]="source"
+                        (delete)="onDeleteConfirm($event)"
+                      >
+                      </ng2-smart-table>
+                    </div> -->
+              </nb-accordion-item-body>
+            </nb-accordion-item>
+
+            <nb-accordion-item #item *ngIf="isEdit">
+              <nb-accordion-item-header>
+                Settings
+              </nb-accordion-item-header>
+              <nb-accordion-item-body>
+                <div class="form-group row">
+                  <label class="col-sm-3 label">Status</label>
+                  <div class="col-sm-9">
+                    <nb-radio-group name="active" [(value)]="data.active" [(ngModel)]="data.active">
+                      <nb-radio [value]="true">Enable Company</nb-radio>
+                      <nb-radio [value]="false">Disable Company</nb-radio>
+                    </nb-radio-group>
+                  </div>
+                </div>
+              </nb-accordion-item-body>
+            </nb-accordion-item>
+          </nb-accordion>
+
+          <br />
+          <div class="buttons-row offset-sm-3 col-sm-8">
+            <button type="submit" nbButton status="primary" hero>Submit</button>
+            <button type="submit" (click)="onClickCancel()" nbButton status="danger" hero>
+              Cancel
+            </button>
+          </div>
+          <br />
+        </form>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

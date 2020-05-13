@@ -1,0 +1,641 @@
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+      <nb-card-header *ngIf="isEdit; else elseBlock">Edit User</nb-card-header>
+      <ng-template #elseBlock
+        ><nb-card-header>Add User</nb-card-header></ng-template
+      >
+
+      <nb-card-body>
+        <form [formGroup]="userForm" (submit)="updateUser()">
+          <nb-tabset [ngClass]="formInvalid ? 'tabInvalid' : ''">
+            <nb-tab tabTitle="User Details">
+              <div formGroupName="company">
+                <div class="form-group row required">
+                  <label class="label col-sm-3 col-form-label">Company</label>
+                  <div class="col-sm-8">
+                    <input
+                      formControlName="companyName"
+                      nbInput
+                      type="text"
+                      placeholder="Select Company"
+                      fullWidth
+                      [nbAutocomplete]="compAutoControl"
+                    />
+
+                    <nb-autocomplete
+                      #compAutoControl
+                      (selectedChange)="
+                        onItemSelect('company', 'companyName', $event)
+                      "
+                    >
+                      <nb-option
+                        *ngFor="let option of filteredCompanyOptions | async"
+                        [value]="option"
+                      >
+                        {{ option.value }}
+                      </nb-option>
+                    </nb-autocomplete>
+
+                    <div
+                      class="error"
+                      *ngIf="
+                        submitted &&
+                        getFormControls('company.id').errors &&
+                        getFormControls('company.id').errors.required
+                      "
+                    >
+                      Company is required!
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="label col-sm-3 col-form-label">First name</label>
+                <div class="col-sm-8">
+                  <input
+                    formControlName="firstName"
+                    type="text"
+                    nbInput
+                    fullWidth
+                    placeholder="First Name"
+                  />
+                  <div
+                    class="error"
+                    *ngIf="
+                      submitted &&
+                      userForm.controls.firstName.errors &&
+                      userForm.controls.firstName.errors.required
+                    "
+                  >
+                    First Name is required!
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row required">
+                <label class="label col-sm-3 col-form-label">Last Name</label>
+                <div class="col-sm-8">
+                  <input
+                    formControlName="lastName"
+                    type="text"
+                    nbInput
+                    fullWidth
+                    placeholder="Last Name"
+                  />
+                  <div
+                    class="error"
+                    *ngIf="
+                      submitted &&
+                      userForm.controls.lastName.errors &&
+                      userForm.controls.lastName.errors.required
+                    "
+                  >
+                    Last Name is required!
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="label col-sm-3 col-form-label">Email</label>
+                <div class="col-sm-8">
+                  <input
+                    formControlName="email"
+                    type="text"
+                    nbInput
+                    fullWidth
+                    placeholder="Email"
+                  />
+                  <div
+                    class="error"
+                    *ngIf="
+                      submitted &&
+                      userForm.controls.email.errors &&
+                      userForm.controls.email.errors.required
+                    "
+                  >
+                    Email is required
+                  </div>
+                  <div
+                    class="error"
+                    *ngIf="
+                      submitted &&
+                      userForm.controls.email.errors &&
+                      userForm.controls.email.errors.email
+                    "
+                  >
+                    Email must be a valid email address
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row required">
+                <label class="label col-sm-3 col-form-label">First name</label>
+                <div class="col-sm-8">
+                  <nb-radio-group formControlName="gender">
+                    <nb-radio [value]="'Male'">
+                      Male
+                    </nb-radio>
+                    <nb-radio [value]="'Female'">
+                      Female
+                    </nb-radio>
+                  </nb-radio-group>
+                  <div
+                    class="error"
+                    *ngIf="
+                      submitted &&
+                      userForm.controls.gender.errors &&
+                      userForm.controls.gender.errors.required
+                    "
+                  >
+                    Gender is required!
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="label col-sm-3 col-form-label"
+                  >Date of Birth</label
+                >
+                <div class="col-sm-2">
+                  <input
+                    formControlName="dateOfBirth"
+                    type="text"
+                    [nbDatepicker]="dateOfBirthPicker"
+                    nbInput
+                    fullWidth
+                    placeholder="Date Of Birth"
+                  />
+                  <nb-datepicker #dateOfBirthPicker></nb-datepicker>
+                  <!-- <span
+                *ngIf="
+                  submitted &&
+                  userForm.controls.dateOfBirth.errors &&
+                  userForm.controls.dateOfBirth.errors.required
+                "
+                class="error"
+                >Date Of Birth is required!</span
+              > -->
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="label col-sm-3 col-form-label"
+                  >Contact Number</label
+                >
+                <div class="col-sm-8">
+                  <input
+                    formControlName="contactNumber"
+                    type="text"
+                    nbInput
+                    fullWidth
+                    placeholder="Contact Number"
+                  />
+                  <div
+                    class="error"
+                    *ngIf="
+                      submitted &&
+                      userForm.controls.contactNumber.errors &&
+                      userForm.controls.contactNumber.errors.required
+                    "
+                  >
+                    First Name is required!
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row required">
+                <label class="label col-sm-3 col-form-label">Group</label>
+                <div class="col-sm-8">
+                  <div formGroupName="group">
+                    <nb-select
+                      placeholder="Select Group"
+                      formControlName="id"
+                      fullWidth
+                    >
+                      <nb-option></nb-option>
+                      <nb-option [value]="1">Gold</nb-option>
+                      <nb-option [value]="2">Silver</nb-option>
+                      <nb-option [value]="3">Platinum</nb-option>
+                    </nb-select>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="label col-sm-3 col-form-label">User Type</label>
+                <div class="col-sm-8">
+                  <nb-select
+                    placeholder="Select User Type"
+                    formControlName="userType"
+                    fullWidth
+                    (selectedChange)="userChanged($event)"
+                  >
+                    <nb-option></nb-option>
+                    <nb-option value="PRIMARY_USER">Primary User</nb-option>
+                    <nb-option value="SECONDARY_USER">Secondary User</nb-option>
+                  </nb-select>
+                </div>
+              </div>
+              <div
+                formGroupName="primaryUser"
+                *ngIf="userForm.controls.userType.value == 'SECONDARY_USER'"
+              >
+                <div class="form-group row required">
+                  <label class="label col-sm-3 col-form-label"
+                    >Primary Employee Id</label
+                  >
+                  <div class="col-sm-8">
+                    <input
+                      formControlName="employeeId"
+                      type="text"
+                      nbInput
+                      fullWidth
+                      placeholder="Primary User"
+                      (click)="openEmployeeSelector()"
+                    />
+                    <div
+                      class="error"
+                      *ngIf="
+                        submitted &&
+                        getFormControls('primaryUser.id').errors &&
+                        getFormControls('primaryUser.id').errors.required
+                      "
+                    >
+                      Primary User is required!
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <nb-accordion>
+                <nb-accordion-item #item>
+                  <nb-accordion-item-header>
+                    Address
+                  </nb-accordion-item-header>
+                  <nb-accordion-item-body>
+                    <div formGroupName="address">
+                      <div class="form-group row">
+                        <label class="label col-sm-3 col-form-label"
+                          >Address Line 1</label
+                        >
+                        <div class="col-sm-8">
+                          <input
+                            formControlName="address_line1"
+                            type="text"
+                            nbInput
+                            fullWidth
+                            placeholder="Address Line 1"
+                          />
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="label col-sm-3 col-form-label"
+                          >Address Line 2</label
+                        >
+                        <div class="col-sm-8">
+                          <input
+                            formControlName="address_line2"
+                            type="text"
+                            nbInput
+                            fullWidth
+                            placeholder="Address Line 2"
+                          />
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="city" class="label col-sm-3 col-form-label"
+                          >City</label
+                        >
+                        <div class="col-sm-3">
+                          <input
+                            formControlName="city"
+                            type="text"
+                            nbInput
+                            fullWidth
+                            placeholder="City"
+                          />
+                        </div>
+                        <label for="state" class="label col-sm-2 col-form-label"
+                          >State</label
+                        >
+                        <div class="col-sm-3">
+                          <input
+                            formControlName="state"
+                            type="text"
+                            nbInput
+                            fullWidth
+                            placeholder="State"
+                          />
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label
+                          for="country"
+                          class="label col-sm-3 col-form-label"
+                          >Country</label
+                        >
+                        <div class="col-sm-3">
+                          <input
+                            formControlName="country"
+                            type="text"
+                            nbInput
+                            fullWidth
+                            placeholder="Country"
+                          />
+                        </div>
+                        <label
+                          for="zipcode"
+                          class="label col-sm-2 col-form-label"
+                          >Zip Code</label
+                        >
+                        <div class="col-sm-3">
+                          <input
+                            formControlName="zipcode"
+                            type="text"
+                            nbInput
+                            fullWidth
+                            placeholder="Zipcode"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </nb-accordion-item-body>
+                </nb-accordion-item>
+              </nb-accordion>
+            </nb-tab>
+            <nb-tab
+              tabTitle="Employment Details"
+              [disabled]="!(userForm.controls.userType.value == 'PRIMARY_USER')"
+            >
+              <div formGroupName="employeeDetails">
+                <div class="form-group row required">
+                  <label class="label col-sm-3 col-form-label"
+                    >Employee Id</label
+                  >
+                  <div class="col-sm-8">
+                    <input
+                      formControlName="employeeId"
+                      type="text"
+                      nbInput
+                      fullWidth
+                      placeholder="Employee Id"
+                    />
+                    <div
+                      class="error"
+                      *ngIf="
+                        submitted &&
+                        getFormControls('employeeDetails.employeeId').errors &&
+                        getFormControls('employeeDetails.employeeId').errors
+                          .required
+                      "
+                    >
+                      EmployeeId is required
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row required">
+                  <label class="label col-sm-3 col-form-label"
+                    >Date of Joining</label
+                  >
+                  <div class="col-sm-2">
+                    <input
+                      formControlName="joiningDate"
+                      type="text"
+                      [nbDatepicker]="dateOfJoiningPicker"
+                      nbInput
+                      fullWidth
+                      placeholder="Date Of Joining"
+                    />
+                    <div
+                      class="error"
+                      *ngIf="
+                        submitted &&
+                        getFormControls('employeeDetails.joiningDate').errors &&
+                        getFormControls('employeeDetails.joiningDate').errors
+                          .required
+                      "
+                    >
+                      Joining Date is required
+                    </div>
+                    <nb-datepicker #dateOfJoiningPicker></nb-datepicker>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="label col-sm-3 col-form-label"
+                    >Nationality</label
+                  >
+                  <div class="col-sm-8">
+                    <input
+                      formControlName="nationality"
+                      type="text"
+                      nbInput
+                      fullWidth
+                      placeholder="Nationality"
+                    />
+                  </div>
+                </div>
+                <div formGroupName="designation">
+                  <div class="form-group row">
+                    <label class="label col-sm-3 col-form-label"
+                      >Designation</label
+                    >
+                    <div class="col-sm-8">
+                      <input
+                        formControlName="name"
+                        nbInput
+                        type="text"
+                        placeholder="Select Designation"
+                        fullWidth
+                        [nbAutocomplete]="desgnAutoControl"
+                      />
+
+                      <nb-autocomplete
+                        #desgnAutoControl
+                        (selectedChange)="
+                          onItemSelect(
+                            'employeeDetails.designation',
+                            'name',
+                            $event
+                          )
+                        "
+                      >
+                        <nb-option
+                          *ngFor="
+                            let option of filteredDesignationOptions | async
+                          "
+                          [value]="option"
+                        >
+                          {{ option.value }}
+                        </nb-option>
+                      </nb-autocomplete>
+                    </div>
+                  </div>
+                </div>
+                <div formGroupName="department">
+                  <div class="form-group row">
+                    <label class="label col-sm-3 col-form-label"
+                      >Department</label
+                    >
+                    <div class="col-sm-8">
+                      <input
+                        formControlName="name"
+                        nbInput
+                        type="text"
+                        placeholder="Select Department"
+                        fullWidth
+                        [nbAutocomplete]="deptAutoControl"
+                      />
+
+                      <nb-autocomplete
+                        #deptAutoControl
+                        (selectedChange)="
+                          onItemSelect(
+                            'employeeDetails.department',
+                            'name',
+                            $event
+                          )
+                        "
+                      >
+                        <nb-option
+                          *ngFor="
+                            let option of filteredDepartmentOptions | async
+                          "
+                          [value]="option"
+                        >
+                          {{ option.value }}
+                        </nb-option>
+                      </nb-autocomplete>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="label col-sm-3 col-form-label"></label>
+                  <div class="col-sm-3">
+                    <nb-checkbox formControlName="compAdmin"
+                      >Company Admin</nb-checkbox
+                    >
+                  </div>
+                  <div class="col-sm-4">
+                    <nb-checkbox formControlName="corporationAdmin"
+                      >Corporation Admin</nb-checkbox
+                    >
+                  </div>
+                </div>
+
+                <nb-accordion>
+                  <nb-accordion-item #item>
+                    <nb-accordion-item-header>
+                      Office Address
+                    </nb-accordion-item-header>
+                    <nb-accordion-item-body>
+                      <div formGroupName="officeAddress">
+                        <div class="form-group row">
+                          <label class="label col-sm-3 col-form-label"
+                            >Address Line 1</label
+                          >
+                          <div class="col-sm-8">
+                            <input
+                              formControlName="address_line1"
+                              type="text"
+                              nbInput
+                              fullWidth
+                              placeholder="Address Line 1"
+                            />
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="label col-sm-3 col-form-label"
+                            >Address Line 2</label
+                          >
+                          <div class="col-sm-8">
+                            <input
+                              formControlName="address_line2"
+                              type="text"
+                              nbInput
+                              fullWidth
+                              placeholder="Address Line 2"
+                            />
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label
+                            for="city"
+                            class="label col-sm-3 col-form-label"
+                            >City</label
+                          >
+                          <div class="col-sm-3">
+                            <input
+                              formControlName="city"
+                              type="text"
+                              nbInput
+                              fullWidth
+                              placeholder="City"
+                            />
+                          </div>
+                          <label
+                            for="state"
+                            class="label col-sm-2 col-form-label"
+                            >State</label
+                          >
+                          <div class="col-sm-3">
+                            <input
+                              formControlName="state"
+                              type="text"
+                              nbInput
+                              fullWidth
+                              placeholder="State"
+                            />
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label
+                            for="country"
+                            class="label col-sm-3 col-form-label"
+                            >Country</label
+                          >
+                          <div class="col-sm-3">
+                            <input
+                              formControlName="country"
+                              type="text"
+                              nbInput
+                              fullWidth
+                              placeholder="Country"
+                            />
+                          </div>
+                          <label
+                            for="zipcode"
+                            class="label col-sm-2 col-form-label"
+                            >Zip Code</label
+                          >
+                          <div class="col-sm-3">
+                            <input
+                              formControlName="zipcode"
+                              type="text"
+                              nbInput
+                              fullWidth
+                              placeholder="Zipcode"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </nb-accordion-item-body>
+                  </nb-accordion-item>
+                </nb-accordion>
+              </div>
+            </nb-tab>
+          </nb-tabset>
+          <div class="buttons-row offset-sm-3 col-sm-8">
+            <button type="submit" nbButton status="primary" hero>Submit</button>
+            <button
+              type="submit"
+              (click)="onClickCancel()"
+              nbButton
+              status="danger"
+              hero
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
